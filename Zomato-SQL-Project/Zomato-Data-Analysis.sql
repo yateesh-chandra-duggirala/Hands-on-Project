@@ -368,3 +368,30 @@ FROM
   revenue_with_lag
 ORDER BY
   rest_id;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### 11. Top 3 most paired products.
+
+-- COMMAND ----------
+
+SELECT
+  f1.f_name AS product1,
+  f2.f_name AS product2,
+  COUNT(o.order_id) AS pair_count
+FROM
+  orders o
+  JOIN order_details od1 ON o.order_id = od1.order_id
+  JOIN order_details od2 ON o.order_id = od2.order_id
+  JOIN food f1 ON f1.f_id = od1.f_id
+  JOIN food f2 ON f2.f_id = od2.f_id
+WHERE
+  od1.f_id < od2.f_id
+GROUP BY
+  f1.f_name,
+  f2.f_name
+ORDER BY
+  pair_count DESC
+LIMIT
+  3;
